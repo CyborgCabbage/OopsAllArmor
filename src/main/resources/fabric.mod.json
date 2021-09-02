@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "allarmor",
+  "version": "${version}",
+  "name": "All Armor",
+  "description": "",
+  "authors": [
+    "CyborgCabbage"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/allarmor/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "cyborgcabbage.allarmor.client.AllArmorClient"
+    ],
+    "main": [
+      "cyborgcabbage.allarmor.AllArmor"
+    ]
+  },
+  "mixins": [
+    "allarmor.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.11.6",
+    "fabric": "*",
+    "minecraft": "1.17.1",
+    "fabric-key-binding-api-v1": "*"
+  }
+}

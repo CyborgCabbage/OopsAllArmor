@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "X X",
+    "XXX",
+    "XXX"
+  ],
+  "key": {
+    "X": {
+      "item": "minecraft:note_block"
+    }
+  },
+  "result": {
+    "item": "allarmor:note_block_chestplate"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "cyborgcabbage.allarmor.mixin",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+    "LivingEntityMixin",
+    "LivingEntityDieMixin",
+    "TemptWithArmorMixin",
+    "ItemStackMixin",
+    "ArmorFeatureRendererMixin",
+    "EntityMixin",
+    "MinecraftClientMixin",
+    "EnderPearlEntityMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
