@@ -251,29 +251,29 @@ public class AllArmor implements ModInitializer {
     ));
     @Override
     public void onInitialize() {
-        PAPER.register();//Finished
-        ENDER_EYE.register();//Texture
+        PAPER.register();
+        ENDER_EYE.register();
         BOW.register();//Should work in creative mode
-        TNT.register();//Finished
-        GLASS.register();//Finished
+        TNT.register();
+        GLASS.register();
 
-        LADDER.register();//Finished (maybe allow players to climb the person wearing the armor)
-        WHEAT.register();//Finished
-        EMERALD.register();//Texture
-        ENCHANTING_TABLE.register();//Finished
-        LIGHTNING_ROD.register();//Finished
+        LADDER.register();//(maybe allow players to climb the person wearing the armor)
+        WHEAT.register();
+        EMERALD.register();
+        ENCHANTING_TABLE.register();
+        LIGHTNING_ROD.register();
 
-        CACTUS.register();//Finished
-        BOAT.register();//Finished
-        GLOWSTONE.register();//Finished
-        COPPER_INGOT.register();//Finished
-        SLIME_BALL.register();//Finished
+        CACTUS.register();
+        BOAT.register();
+        GLOWSTONE.register();
+        COPPER_INGOT.register();
+        SLIME_BALL.register();
 
         DRAGON_BREATH.register();//Texture Later
-        BEDROCK.register();//Finished
-        NOTE_BLOCK.register();//Finished
-        LAPIS_LAZULI.register();//Finished
-        ENDER_PEARL.register();//Texture
+        BEDROCK.register();
+        NOTE_BLOCK.register();
+        LAPIS_LAZULI.register();
+        ENDER_PEARL.register();
 
         //BONE_MEAL.register();//Grows surrounding crops? (try and think of something better)
         //BOOK.register();//Should trigger all recipes when worn
