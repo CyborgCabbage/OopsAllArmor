@@ -1,13 +1,13 @@
 package cyborgcabbage.allarmor.mixin;
 
 import cyborgcabbage.allarmor.AllArmor;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -31,7 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
-@Mixin(LivingEntity.class)
+@Mixin(value = LivingEntity.class, priority = 1001)
 public abstract class LivingEntityMixin extends Entity{
     @Shadow @Final private DefaultedList<ItemStack> equippedArmor;
 
@@ -179,10 +179,10 @@ public abstract class LivingEntityMixin extends Entity{
         Vec3d vel = this.getVelocity();
         this.setVelocity(vel.x,vel.y+buoyancy*(waterHeight/entityHeight)*0.06,vel.z);
     }
-    @ModifyVariable(method = "travel", at = @At(value = "STORE", ordinal = 0), name="h")
-    private float inject(float x){
+    @Redirect(method = "travel", at = @At(value = "INVOKE", target="Lnet/minecraft/enchantment/EnchantmentHelper;getDepthStrider(Lnet/minecraft/entity/LivingEntity;)I"))
+    private int inject(LivingEntity entity){
         float buoyancy = AllArmor.BOAT.wearingFraction((LivingEntity) (Object) this);
-        return x+buoyancy*3.0f;
+        return EnchantmentHelper.getDepthStrider(entity)+(int)(buoyancy*3.0f);
     }
     @Inject(method="tick",at=@At("HEAD"))
     private void inject(CallbackInfo ci){
