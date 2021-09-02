@@ -2,13 +2,13 @@
   "schemaVersion": 1,
   "id": "allarmor",
   "version": "${version}",
-  "name": "All Armor",
+  "name": "Oops! All Armor",
   "description": "",
   "authors": [
     "CyborgCabbage"
   ],
   "contact": {},
-  "license": "MIT",
+  "license": "LGPL-3",
   "icon": "assets/allarmor/icon.png",
   "environment": "*",
   "entrypoints": {
