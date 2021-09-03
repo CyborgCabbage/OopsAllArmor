@@ -1,5 +1,5 @@
 # OopsAllArmor
-A fabric mod for 1.17.1 that adds a selection of new armor sets. I've tried make each armor set do something unique such that they all fill some niche not filled by the others. It should work in multiplayer, but I haven't actually tested it so use at your own peril.
+A fabric mod for 1.17.1 that adds a selection of new armor sets. I've tried make each armor set do something unique such that they all fill some niche not filled by the others. Tested for multiplayer and against the All of Fabric 4 modpack.
 
 ![Alt enter](images/showcase.png?raw=true)
 
