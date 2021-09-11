@@ -278,34 +278,5 @@ public class AllArmor implements ModInitializer {
         //BONE_MEAL.register();//Grows surrounding crops? (try and think of something better)
         //BOOK.register();//Should trigger all recipes when worn
         //JUKEBOX.register();//Should cycle through music discs in inventory
-
-        ServerPlayNetworking.registerGlobalReceiver(new Identifier("allarmor","note_block_armor"), (server, player, handler, buf, responseSender) -> {
-            int key = buf.readByte();
-
-            // All operations on the server or world must be executed on the server thread
-            server.execute(() ->{
-                if(!player.world.isClient()){
-                    int c_maj_cd = switch (key) {
-                        case 0 -> 0;//C
-                        case 1 -> 2;//D
-                        case 2 -> 4;//E
-                        case 3 -> 5;//F
-                        case 4 -> 7;//G
-                        case 5 -> 9;//A
-                        case 6 -> 11;//B
-                        case 7 -> 12;//C
-                        case 8 -> 14;
-                        default -> 0;//D
-                    };
-                    player.playSound(
-                            Instrument.fromBlockState(player.world.getBlockState(player.getLandingPos())).getSound(),
-                            SoundCategory.RECORDS,
-                            1f,
-                            (float)Math.pow(2.0D, (double)(c_maj_cd - 12) / 12.0D)
-                    );
-                }
-
-            });
-        });
     }
 }

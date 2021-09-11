@@ -107,18 +107,18 @@ public abstract class LivingEntityMixin extends Entity{
             }
             if (AllArmor.LIGHTNING_ROD.wearingAny((LivingEntity) (Object) this)) {
                 float frequency = 1.0f/1200.0f; //Once every minute
-                if (this.world.isThundering()){
+                if (sw.isThundering()){
                     frequency = 1.0f/100.0f;
                 }
                 frequency *= AllArmor.LIGHTNING_ROD.wearingFraction((LivingEntity) (Object) this);
-                if (this.world.random.nextFloat() < frequency) {
+                if (sw.random.nextFloat() < frequency) {
                     BlockPos blockPos = this.getBlockPos();
-                    if (this.world.isSkyVisible(blockPos)) {
-                        if(this.world.getGameRules().getBoolean(GameRules.DO_MOB_GRIEFING) || (LivingEntity)(Object)this instanceof PlayerEntity) {
-                            LightningEntity lightningEntity = EntityType.LIGHTNING_BOLT.create(this.world);
+                    if (sw.isSkyVisible(blockPos)) {
+                        if(sw.getGameRules().getBoolean(GameRules.DO_MOB_GRIEFING) || (LivingEntity)(Object)this instanceof PlayerEntity) {
+                            LightningEntity lightningEntity = EntityType.LIGHTNING_BOLT.create(sw);
                             lightningEntity.refreshPositionAfterTeleport(Vec3d.ofBottomCenter(blockPos));
                             lightningEntity.setChanneler(null);
-                            this.world.spawnEntity(lightningEntity);
+                            sw.spawnEntity(lightningEntity);
                             this.playSound(SoundEvents.ITEM_TRIDENT_THUNDER, 5.0F, 1.0F);
                         }
                     }
@@ -126,7 +126,7 @@ public abstract class LivingEntityMixin extends Entity{
             }
             if (AllArmor.CACTUS.wearingAny((LivingEntity) (Object) this)) {
                 float fraction = AllArmor.CACTUS.wearingFraction((LivingEntity) (Object) this);
-                List<Entity> collidingEntities = this.world.getOtherEntities(this, this.getBoundingBox());
+                List<Entity> collidingEntities = sw.getOtherEntities(this, this.getBoundingBox());
                 for(var e: collidingEntities){
                     e.damage(DamageSource.CACTUS, fraction);
                 }
@@ -157,6 +157,30 @@ public abstract class LivingEntityMixin extends Entity{
                     helmet.damage(1, (LivingEntity)(Object)this, ((player) -> {
                         player.sendEquipmentBreakStatus(EquipmentSlot.HEAD);
                     }));
+                }
+            }
+            if (AllArmor.ENCHANTING_TABLE.wearingAny((LivingEntity) (Object) this)){
+                float frequency = 0.005f;
+                Iterator<ItemStack> armor = this.getArmorItems().iterator();
+                ItemStack boots = armor.next();
+                ItemStack leggings = armor.next();
+                ItemStack chestplate = armor.next();
+                ItemStack helmet = armor.next();
+                if(boots.getItem() == AllArmor.ENCHANTING_TABLE.boots && sw.random.nextFloat() < frequency){
+                    boots.removeSubNbt("Enchantments");
+                    EnchantmentHelper.enchant(sw.random,boots,30,true);
+                }
+                if(leggings.getItem() == AllArmor.ENCHANTING_TABLE.leggings && sw.random.nextFloat() < frequency){
+                    leggings.removeSubNbt("Enchantments");
+                    EnchantmentHelper.enchant(sw.random,leggings,30,true);
+                }
+                if(chestplate.getItem() == AllArmor.ENCHANTING_TABLE.chestplate && sw.random.nextFloat() < frequency){
+                    chestplate.removeSubNbt("Enchantments");
+                    EnchantmentHelper.enchant(sw.random,chestplate,30,true);
+                }
+                if(helmet.getItem() == AllArmor.ENCHANTING_TABLE.helmet && sw.random.nextFloat() < frequency){
+                    helmet.removeSubNbt("Enchantments");
+                    EnchantmentHelper.enchant(sw.random,helmet,30,true);
                 }
             }
         }

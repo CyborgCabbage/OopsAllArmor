@@ -7,11 +7,11 @@
     "LivingEntityMixin",
     "LivingEntityDieMixin",
     "TemptWithArmorMixin",
-    "ItemStackMixin",
     "ArmorFeatureRendererMixin",
-    "EntityMixin",
-    "MinecraftClientMixin",
-    "EnderPearlEntityMixin"
+    "BlockMixin",
+    "EnderPearlEntityMixin",
+    "ServerPlayNetowrkHandlerMixin",
+    "EntityMixin"
   ],
   "client": [
   ],

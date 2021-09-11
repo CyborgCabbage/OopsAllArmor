@@ -73,4 +73,16 @@ public class ArmorSet {
         }
         return false;
     }
+    public boolean wearingBoots(LivingEntity entity){
+        return wearingArray(entity)[0];
+    }
+    public boolean wearingLeggings(LivingEntity entity){
+        return wearingArray(entity)[1];
+    }
+    public boolean wearingChestplate(LivingEntity entity){
+        return wearingArray(entity)[2];
+    }
+    public boolean wearingHelmet(LivingEntity entity){
+        return wearingArray(entity)[3];
+    }
 }
