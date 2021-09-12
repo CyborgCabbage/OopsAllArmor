@@ -147,4 +147,15 @@ public class ArmorSet {
         }
         return true;
     }
+    public void damageEach(LivingEntity livingEntity, int amount) {
+        Iterator<ItemStack> armor = livingEntity.getArmorItems().iterator();
+        for (Iterator<ItemStack> it = armor; it.hasNext(); ) {
+            ItemStack itemStack = it.next();
+            if(this.fromSet(itemStack)){
+                itemStack.damage(1, livingEntity, ((player) -> {
+                    player.sendEquipmentBreakStatus(((ArmorItem)itemStack.getItem()).getSlotType());
+                }));
+            }
+        }
+    }
 }

@@ -32,6 +32,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 @Mixin(value = LivingEntity.class, priority = 1001)
@@ -47,6 +48,8 @@ public abstract class LivingEntityMixin extends Entity{
     @Shadow public abstract Iterable<ItemStack> getArmorItems();
 
     @Shadow public abstract double getAttackDistanceScalingFactor(@Nullable Entity entity);
+
+    @Shadow protected int roll;
 
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
@@ -234,6 +237,9 @@ public abstract class LivingEntityMixin extends Entity{
                     if(this.random.nextFloat() < fraction) {
                         this.world.addParticle(ParticleTypes.DRAGON_BREATH, this.getX(), this.getY(), this.getZ(), vel.x - thrust.x * 4.0 + this.random.nextGaussian() * 0.05, vel.y - thrust.y * 4.0 + this.random.nextGaussian() * 0.05, vel.z - thrust.z * 4.0 + this.random.nextGaussian() * 0.05);
                     }
+                }
+                if (!this.world.isClient && this.age % 20 == 0) {
+                    AllArmor.DRAGON_BREATH.damageEach((LivingEntity)(Object)this, 1);
                 }
             }
         }
