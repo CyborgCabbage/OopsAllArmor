@@ -15,7 +15,7 @@
   "item.allarmor.bow_chestplate": "Bow Chestplate",
   "item.allarmor.bow_leggings": "Bow Leggings",
   "item.allarmor.bow_boots": "Bow Boots",
-  "item.allarmor.bow.tooltip": "Arrow Reflection",
+  "item.allarmor.bow.tooltip": "Arrow Reflecting",
   
   "item.allarmor.tnt_helmet": "TNT Helmet",
   "item.allarmor.tnt_chestplate": "TNT Chestplate",
@@ -57,7 +57,7 @@
   "item.allarmor.lightning_rod_chestplate": "Lightning Rod Chestplate",
   "item.allarmor.lightning_rod_leggings": "Lightning Rod Leggings",
   "item.allarmor.lightning_rod_boots": "Lightning Rod Boots",
-  "item.allarmor.lightning_rod.tooltip": "Bad for your health",
+  "item.allarmor.lightning_rod.tooltip": "Lighting Rod",
 
   "item.allarmor.cactus_helmet": "Cactus Helmet",
   "item.allarmor.cactus_chestplate": "Cactus Chestplate",

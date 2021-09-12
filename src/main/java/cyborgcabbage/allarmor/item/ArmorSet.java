@@ -1,13 +1,18 @@
 package cyborgcabbage.allarmor.item;
 
+import cyborgcabbage.allarmor.AllArmor;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.*;
+import net.minecraft.tag.FluidTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
 
 public class ArmorSet {
     public MyArmorItem helmet;
@@ -67,7 +72,7 @@ public class ArmorSet {
         return boots.getMaterial();
     }
     public boolean fromSet(ItemStack itemstack){
-        Item item = ItemStack.EMPTY.getItem();
+        Item item = itemstack.getItem();
         if(item instanceof ArmorItem armorItem){
             return armorItem.getMaterial() == this.getMaterial();
         }
@@ -84,5 +89,62 @@ public class ArmorSet {
     }
     public boolean wearingHelmet(LivingEntity entity){
         return wearingArray(entity)[3];
+    }
+    public ArrayList<Integer> wearingIndices(LivingEntity livingEntity){
+        boolean[] armor = wearingArray(livingEntity);
+        ArrayList<Integer> armorIndices = new ArrayList<>();
+        for(int i=0;i<4;i++){
+            if(armor[i]){
+                armorIndices.add(i);
+            }
+        }
+        return armorIndices;
+    }
+    public boolean damage(LivingEntity livingEntity, int amount){
+        Iterator<ItemStack> armor = livingEntity.getArmorItems().iterator();
+        ItemStack boots = armor.next();
+        ItemStack leggings = armor.next();
+        ItemStack chestplate = armor.next();
+        ItemStack helmet = armor.next();
+        if(!wearingAny(livingEntity)){
+            return false;
+        }
+        while(amount > 0) {
+            switch(livingEntity.getRandom().nextInt(4)) {
+                case 0:
+                    if (boots.getItem() == this.boots) {
+                        boots.damage(1, livingEntity, ((player) -> {
+                            player.sendEquipmentBreakStatus(EquipmentSlot.FEET);
+                        }));
+                        amount--;
+                    }
+                    break;
+                case 1:
+                    if (leggings.getItem() == this.leggings) {
+                        leggings.damage(1, livingEntity, ((player) -> {
+                            player.sendEquipmentBreakStatus(EquipmentSlot.LEGS);
+                        }));
+                        amount--;
+                    }
+                    break;
+                case 2:
+                    if (chestplate.getItem() == this.chestplate) {
+                        chestplate.damage(1, livingEntity, ((player) -> {
+                            player.sendEquipmentBreakStatus(EquipmentSlot.CHEST);
+                        }));
+                        amount--;
+                    }
+                    break;
+                case 3:
+                    if (helmet.getItem() == this.helmet) {
+                        helmet.damage(1, livingEntity, ((player) -> {
+                            player.sendEquipmentBreakStatus(EquipmentSlot.HEAD);
+                        }));
+                        amount--;
+                    }
+                    break;
+            }
+        }
+        return true;
     }
 }

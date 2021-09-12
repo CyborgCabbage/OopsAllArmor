@@ -16,8 +16,10 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -30,6 +32,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Mixin(value = LivingEntity.class, priority = 1001)
 public abstract class LivingEntityMixin extends Entity{
@@ -42,6 +45,8 @@ public abstract class LivingEntityMixin extends Entity{
     @Shadow protected abstract void damageHelmet(DamageSource source, float amount);
 
     @Shadow public abstract Iterable<ItemStack> getArmorItems();
+
+    @Shadow public abstract double getAttackDistanceScalingFactor(@Nullable Entity entity);
 
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
@@ -63,6 +68,7 @@ public abstract class LivingEntityMixin extends Entity{
                     projectile.prevPitch = -projectile.prevPitch;
                     cir.setReturnValue(false);
                 }
+                AllArmor.BOW.damage((LivingEntity) (Object) this,2);
             }
         }
         if(source.isOutOfWorld() && amount < Float.MAX_VALUE){//The "amount < Float.MAX_VALUE" makes sure the armor doesn't trigger on "/kill"
@@ -84,9 +90,12 @@ public abstract class LivingEntityMixin extends Entity{
     private void injected(CallbackInfoReturnable<Boolean> cir) {
         if (this.isSpectator()) {
             cir.setReturnValue(false);
-        } else if(AllArmor.LADDER.wearingAny((LivingEntity) (Object)this) && this.horizontalCollision){
-            this.climbingPos = Optional.of(this.getBlockPos());
-            cir.setReturnValue(true);
+        } else if(AllArmor.LADDER.wearingAny((LivingEntity) (Object)this)){
+            Stream<VoxelShape> blockCollisions = this.world.getBlockCollisions(null, this.getBoundingBox().expand(0.3, 0.0, 0.3));
+            if(blockCollisions.findAny().isPresent()) {
+                this.climbingPos = Optional.of(this.getBlockPos());
+                cir.setReturnValue(true);
+            }
         }
     }
     @Inject(at = @At("HEAD"),method = "baseTick")
@@ -96,7 +105,7 @@ public abstract class LivingEntityMixin extends Entity{
             if (AllArmor.EMERALD.wearingAny((LivingEntity) (Object) this)) {
                 float frequency = 1.0f/72000.0f; //Once every 60 minutes
                 frequency *= AllArmor.EMERALD.wearingFraction((LivingEntity) (Object) this);
-                if (this.world.random.nextFloat() < frequency) {
+                if (sw.random.nextFloat() < frequency) {
                     VillagerEntity villagerEntity = EntityType.VILLAGER.create(sw);
                     if (villagerEntity != null) {
                         villagerEntity.initialize(sw, sw.getLocalDifficulty(this.getBlockPos()), SpawnReason.SPAWN_EGG, null, null);
@@ -113,13 +122,15 @@ public abstract class LivingEntityMixin extends Entity{
                 frequency *= AllArmor.LIGHTNING_ROD.wearingFraction((LivingEntity) (Object) this);
                 if (sw.random.nextFloat() < frequency) {
                     BlockPos blockPos = this.getBlockPos();
-                    if (sw.isSkyVisible(blockPos)) {
-                        if(sw.getGameRules().getBoolean(GameRules.DO_MOB_GRIEFING) || (LivingEntity)(Object)this instanceof PlayerEntity) {
-                            LightningEntity lightningEntity = EntityType.LIGHTNING_BOLT.create(sw);
-                            lightningEntity.refreshPositionAfterTeleport(Vec3d.ofBottomCenter(blockPos));
-                            lightningEntity.setChanneler(null);
-                            sw.spawnEntity(lightningEntity);
-                            this.playSound(SoundEvents.ITEM_TRIDENT_THUNDER, 5.0F, 1.0F);
+                    if(blockPos != null) {
+                        if (sw.isSkyVisible(blockPos)) {
+                            if (sw.getGameRules().getBoolean(GameRules.DO_MOB_GRIEFING) || (LivingEntity) (Object) this instanceof PlayerEntity) {
+                                LightningEntity lightningEntity = EntityType.LIGHTNING_BOLT.create(sw);
+                                lightningEntity.refreshPositionAfterTeleport(Vec3d.ofBottomCenter(blockPos));
+                                lightningEntity.setChanneler(null);
+                                sw.spawnEntity(lightningEntity);
+                                this.playSound(SoundEvents.ITEM_TRIDENT_THUNDER, 5.0F, 1.0F);
+                            }
                         }
                     }
                 }
@@ -250,5 +261,13 @@ public abstract class LivingEntityMixin extends Entity{
                 }
             }
         }*/
+    }
+
+    @Redirect(method = "getArmorVisibility", at = @At(value = "INVOKE",target = "Lnet/minecraft/item/ItemStack;isEmpty()Z"))
+    public boolean injected(ItemStack itemStack){
+        if (AllArmor.LAPIS_LAZULI.fromSet(itemStack)) {
+            return true;
+        }
+        return itemStack.isEmpty();
     }
 }
