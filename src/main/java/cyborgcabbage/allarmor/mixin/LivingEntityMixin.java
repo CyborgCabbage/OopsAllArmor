@@ -1,24 +1,29 @@
 package cyborgcabbage.allarmor.mixin;
 
 import cyborgcabbage.allarmor.AllArmor;
+import net.minecraft.block.DispenserBlock;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
+import net.minecraft.item.BoneMealItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldEvents;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -89,6 +94,7 @@ public abstract class LivingEntityMixin extends Entity{
             }
         }
     }
+
     @Inject(at = @At("HEAD"), method = "isClimbing", cancellable = true)
     private void injected(CallbackInfoReturnable<Boolean> cir) {
         if (this.isSpectator()) {
@@ -101,6 +107,7 @@ public abstract class LivingEntityMixin extends Entity{
             }
         }
     }
+
     @Inject(at = @At("HEAD"),method = "baseTick")
     private void injected(CallbackInfo ci){
         if(!this.world.isClient()) {
@@ -197,18 +204,23 @@ public abstract class LivingEntityMixin extends Entity{
                     EnchantmentHelper.enchant(sw.random,helmet,30,true);
                 }
             }
+            if(AllArmor.BONE_MEAL.wearingAny((LivingEntity) (Object) this)){
+                float frequency = 0.2f;
+                if(sw.random.nextFloat() < frequency*AllArmor.BONE_MEAL.wearingFraction((LivingEntity)(Object)this)) {
+                    BlockPos blockPos = this.getBlockPos().add(random.nextInt(6) - 3, random.nextInt(4) - 2, random.nextInt(6) - 3);
+                    if (world.getBlockState(blockPos) != null) {
+                        if (BoneMealItem.useOnFertilizable(new ItemStack(Items.BONE_MEAL, 64), world, blockPos) || BoneMealItem.useOnGround(new ItemStack(Items.BONE_MEAL, 64), world, blockPos, null)) {
+                            if (!world.isClient) {
+                                world.syncWorldEvent(WorldEvents.BONE_MEAL_USED, blockPos, 0);
+                            }
+                            AllArmor.BONE_MEAL.damage((LivingEntity) (Object) this, 3);
+                        }
+                    }
+                }
+            }
         }
     }
-    /*@ModifyVariable(at = @At(value="INVOKE",target="Lnet/minecraft/enchantment/EnchantmentHelper;getDepthStrider(Lnet/minecraft/entity/LivingEntity;)I"),method = "travel", name="d")
-    private double inject(double x){
-        float buoyancy = AllArmor.BOAT.wearingFraction((LivingEntity) (Object) this);
-        float entityHeight = this.getHeight();
-        float waterHeight = Math.min((float)this.getFluidHeight(FluidTags.WATER),entityHeight);
-        if(buoyancy > 0.0){
-            System.out.println("Water Level: "+(waterHeight/entityHeight));
-        }
-        return x-buoyancy*(waterHeight/entityHeight)*0.75;
-    }*/
+
     @Inject(at = @At(value="INVOKE",target="Lnet/minecraft/enchantment/EnchantmentHelper;getDepthStrider(Lnet/minecraft/entity/LivingEntity;)I"),method = "travel")
     private void inject(Vec3d movementInput, CallbackInfo ci){
         float buoyancy = AllArmor.BOAT.wearingFraction((LivingEntity) (Object) this);
@@ -217,11 +229,13 @@ public abstract class LivingEntityMixin extends Entity{
         Vec3d vel = this.getVelocity();
         this.setVelocity(vel.x,vel.y+buoyancy*(waterHeight/entityHeight)*0.06,vel.z);
     }
+
     @Redirect(method = "travel", at = @At(value = "INVOKE", target="Lnet/minecraft/enchantment/EnchantmentHelper;getDepthStrider(Lnet/minecraft/entity/LivingEntity;)I"))
     private int inject(LivingEntity entity){
         float buoyancy = AllArmor.BOAT.wearingFraction((LivingEntity) (Object) this);
         return EnchantmentHelper.getDepthStrider(entity)+(int)(buoyancy*3.0f);
     }
+
     @Inject(method="tick",at=@At("HEAD"))
     private void inject(CallbackInfo ci){
         double fraction = AllArmor.DRAGON_BREATH.wearingFraction((LivingEntity)(Object)this);

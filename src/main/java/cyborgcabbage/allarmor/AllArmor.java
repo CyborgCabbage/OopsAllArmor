@@ -213,7 +213,7 @@ public class AllArmor implements ModInitializer {
             3,
             new int[]{1, 1, 1, 1},
             15,
-            SoundEvents.ITEM_BOOK_PAGE_TURN,
+            SoundEvents.BLOCK_HONEY_BLOCK_PLACE,
             0.0F,
             0.0F,
             Items.BONE_MEAL
@@ -275,7 +275,7 @@ public class AllArmor implements ModInitializer {
         LAPIS_LAZULI.register();
         ENDER_PEARL.register();
 
-        //BONE_MEAL.register();//Grows surrounding crops? (try and think of something better)
+        BONE_MEAL.register();
         //BOOK.register();//Should trigger all recipes when worn
         //JUKEBOX.register();//Should cycle through music discs in inventory
     }
