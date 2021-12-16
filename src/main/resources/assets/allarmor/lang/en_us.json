@@ -3,7 +3,7 @@
   "item.allarmor.paper_chestplate": "Paper Chestplate",
   "item.allarmor.paper_leggings": "Paper Leggings",
   "item.allarmor.paper_boots": "Paper Boots",
-  "item.allarmor.paper.tooltip": "Water soluble",
+  "item.allarmor.paper.tooltip": "Water Soluble",
   
   "item.allarmor.ender_eye_helmet": "Ender Eye Helmet",
   "item.allarmor.ender_eye_chestplate": "Ender Eye Chestplate",
@@ -21,19 +21,19 @@
   "item.allarmor.tnt_chestplate": "TNT Chestplate",
   "item.allarmor.tnt_leggings": "TNT Leggings",
   "item.allarmor.tnt_boots": "TNT Boots",
-  "item.allarmor.tnt.tooltip": "Terminally explosive (WEAR AT YOUR OWN RISK)",
+  "item.allarmor.tnt.tooltip": "WEAR AT YOUR OWN RISK",
 
   "item.allarmor.glass_helmet": "Glass Helmet",
   "item.allarmor.glass_chestplate": "Glass Chestplate",
   "item.allarmor.glass_leggings": "Glass Leggings",
   "item.allarmor.glass_boots": "Glass Boots",
-  "item.allarmor.glass.tooltip": "Strong but brittle",
+  "item.allarmor.glass.tooltip": "Brittle",
 
   "item.allarmor.ladder_helmet": "Ladder Helmet",
   "item.allarmor.ladder_chestplate": "Ladder Chestplate",
   "item.allarmor.ladder_leggings": "Ladder Leggings",
   "item.allarmor.ladder_boots": "Ladder Boots",
-  "item.allarmor.ladder.tooltip": "Ladder-man, Ladder-man...",
+  "item.allarmor.ladder.tooltip": "Ladder-man",
 
   "item.allarmor.wheat_helmet": "Wheat Helmet",
   "item.allarmor.wheat_chestplate": "Wheat Chestplate",
@@ -81,13 +81,13 @@
   "item.allarmor.copper_ingot_chestplate": "Copper Chestplate",
   "item.allarmor.copper_ingot_leggings": "Copper Leggings",
   "item.allarmor.copper_ingot_boots": "Copper Boots",
-  "item.allarmor.copper_ingot.tooltip": "It's like iron, but worse",
+  "item.allarmor.copper_ingot.tooltip": "Red Iron",
 
   "item.allarmor.slime_ball_helmet": "Slime Ball Helmet",
   "item.allarmor.slime_ball_chestplate": "Slime Ball Chestplate",
   "item.allarmor.slime_ball_leggings": "Slime Ball Leggings",
   "item.allarmor.slime_ball_boots": "Slime Ball Boots",
-  "item.allarmor.slime_ball.tooltip": "Jump up, jump up and get down!",
+  "item.allarmor.slime_ball.tooltip": "Bouncy",
 
   "item.allarmor.dragon_breath_helmet": "Dragon Breath Helmet",
   "item.allarmor.dragon_breath_chestplate": "Dragon Breath Chestplate",

@@ -1,7 +1,6 @@
 package cyborgcabbage.allarmor.mixin;
 
 import cyborgcabbage.allarmor.AllArmor;
-import net.minecraft.block.DispenserBlock;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
@@ -15,9 +14,7 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.tag.FluidTags;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.shape.VoxelShape;
@@ -25,7 +22,6 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldEvents;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -37,13 +33,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 @Mixin(value = LivingEntity.class, priority = 1001)
 public abstract class LivingEntityMixin extends Entity{
-    @Shadow @Final private DefaultedList<ItemStack> equippedArmor;
-
     @Shadow private Optional<BlockPos> climbingPos;
 
     @Shadow public abstract boolean isFallFlying();
@@ -100,12 +93,21 @@ public abstract class LivingEntityMixin extends Entity{
         if (this.isSpectator()) {
             cir.setReturnValue(false);
         } else if(AllArmor.LADDER.wearingAny((LivingEntity) (Object)this)){
-            Stream<VoxelShape> blockCollisions = this.world.getBlockCollisions(null, this.getBoundingBox().expand(0.3, 0.0, 0.3));
-            if(blockCollisions.findAny().isPresent()) {
+            Iterable<VoxelShape> blockCollisions = this.world.getBlockCollisions(null, this.getBoundingBox().expand(0.3, 0.0, 0.3));
+            for (VoxelShape voxelShape : blockCollisions) {
+                if (voxelShape.isEmpty()) continue;
                 this.climbingPos = Optional.of(this.getBlockPos());
                 cir.setReturnValue(true);
+                break;
             }
         }
+        /*
+        Iterable<VoxelShape> iterable = world.getBlockCollisions(entity, targetBox);
+        for (VoxelShape voxelShape : iterable) {
+            if (voxelShape.isEmpty()) continue;
+            return false;
+        }
+        */
     }
 
     @Inject(at = @At("HEAD"),method = "baseTick")
