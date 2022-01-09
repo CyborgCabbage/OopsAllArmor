@@ -23,8 +23,8 @@ public abstract class TemptWithArmorMixin {
         Iterable<ItemStack> armor = entity.getArmorItems();
         for (ItemStack itemStack : armor) {
             Item item = itemStack.getItem();
-            if (item instanceof ArmorItem){
-                Ingredient ingredient = ((ArmorItem) item).getMaterial().getRepairIngredient();
+            if (item instanceof ArmorItem armorItem){
+                Ingredient ingredient = armorItem.getMaterial().getRepairIngredient();
                 for(ItemStack k: ingredient.getMatchingStacks()){
                     if(this.food.test(k)){
                         cir.setReturnValue(true);
