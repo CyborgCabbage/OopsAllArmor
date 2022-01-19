@@ -5,13 +5,16 @@ import net.fabricmc.api.ModInitializer;
 import cyborgcabbage.allarmor.item.MyArmorMaterial;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.enums.Instrument;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 
-public class AllArmor implements ModInitializer {
+import java.util.ArrayList;
 
+public class AllArmor implements ModInitializer {
     public static final ArmorSet PAPER = new ArmorSet(new MyArmorMaterial(
             "paper",
             3,

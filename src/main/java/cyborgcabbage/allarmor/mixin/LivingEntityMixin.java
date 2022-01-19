@@ -1,6 +1,7 @@
 package cyborgcabbage.allarmor.mixin;
 
 import cyborgcabbage.allarmor.AllArmor;
+import cyborgcabbage.allarmor.item.ArmorSet;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
@@ -30,6 +31,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -147,55 +149,25 @@ public abstract class LivingEntityMixin extends Entity{
                 }
             }
             if (AllArmor.PAPER.wearingAny((LivingEntity) (Object) this)){
-                Iterator<ItemStack> armor = this.getArmorItems().iterator();
-                ItemStack boots = armor.next();
-                ItemStack leggings = armor.next();
-                ItemStack chestplate = armor.next();
-                ItemStack helmet = armor.next();
+                ArrayList<ItemStack> armorItems = ArmorSet.getArmorItems((LivingEntity) (Object) this);
                 float water = (float) this.getFluidHeight(FluidTags.WATER)/this.getHeight();
-                if(water > 0.00 && boots.getItem() == AllArmor.PAPER.boots){
-                    boots.damage(1, (LivingEntity)(Object)this, ((player) -> {
-                        player.sendEquipmentBreakStatus(EquipmentSlot.FEET);
-                    }));
-                }
-                if(water > 0.25 && leggings.getItem() == AllArmor.PAPER.leggings){
-                    leggings.damage(1, (LivingEntity)(Object)this, ((player) -> {
-                        player.sendEquipmentBreakStatus(EquipmentSlot.LEGS);
-                    }));
-                }
-                if(water > 0.50 && chestplate.getItem() == AllArmor.PAPER.chestplate){
-                    chestplate.damage(1, (LivingEntity)(Object)this, ((player) -> {
-                        player.sendEquipmentBreakStatus(EquipmentSlot.CHEST);
-                    }));
-                }
-                if(water > 0.75 && helmet.getItem() == AllArmor.PAPER.helmet){
-                    helmet.damage(1, (LivingEntity)(Object)this, ((player) -> {
-                        player.sendEquipmentBreakStatus(EquipmentSlot.HEAD);
-                    }));
+                for(int i = 0; i < 4; i++){
+                    ItemStack itemStack = armorItems.get(i);
+                    if(water > i*0.25f && AllArmor.PAPER.isFromSet(itemStack)){
+                        itemStack.damage(1, (LivingEntity)(Object)this, ((player) -> {
+                            player.sendEquipmentBreakStatus(ArmorSet.getSlot(itemStack));
+                        }));
+                    }
                 }
             }
             if (AllArmor.ENCHANTING_TABLE.wearingAny((LivingEntity) (Object) this)){
                 float frequency = 0.005f;
-                Iterator<ItemStack> armor = this.getArmorItems().iterator();
-                ItemStack boots = armor.next();
-                ItemStack leggings = armor.next();
-                ItemStack chestplate = armor.next();
-                ItemStack helmet = armor.next();
-                if(boots.getItem() == AllArmor.ENCHANTING_TABLE.boots && sw.random.nextFloat() < frequency){
-                    boots.removeSubNbt("Enchantments");
-                    EnchantmentHelper.enchant(sw.random,boots,30,true);
-                }
-                if(leggings.getItem() == AllArmor.ENCHANTING_TABLE.leggings && sw.random.nextFloat() < frequency){
-                    leggings.removeSubNbt("Enchantments");
-                    EnchantmentHelper.enchant(sw.random,leggings,30,true);
-                }
-                if(chestplate.getItem() == AllArmor.ENCHANTING_TABLE.chestplate && sw.random.nextFloat() < frequency){
-                    chestplate.removeSubNbt("Enchantments");
-                    EnchantmentHelper.enchant(sw.random,chestplate,30,true);
-                }
-                if(helmet.getItem() == AllArmor.ENCHANTING_TABLE.helmet && sw.random.nextFloat() < frequency){
-                    helmet.removeSubNbt("Enchantments");
-                    EnchantmentHelper.enchant(sw.random,helmet,30,true);
+                ArrayList<ItemStack> armorItems = AllArmor.ENCHANTING_TABLE.getThisArmorItems((LivingEntity) (Object) this);
+                for(ItemStack itemStack: armorItems){
+                    if(sw.random.nextFloat() < frequency){
+                        itemStack.removeSubNbt("Enchantments");
+                        EnchantmentHelper.enchant(sw.random, itemStack,30,true);
+                    }
                 }
             }
             if(AllArmor.BONE_MEAL.wearingAny((LivingEntity) (Object) this)){

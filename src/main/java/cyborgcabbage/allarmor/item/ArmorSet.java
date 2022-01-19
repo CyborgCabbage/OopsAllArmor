@@ -1,5 +1,6 @@
 package cyborgcabbage.allarmor.item;
 
+import cyborgcabbage.allarmor.AllArmor;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -33,16 +34,16 @@ public class ArmorSet {
     public void register(){
         this.register(material.getName());
     }
+    public static ArrayList<ItemStack> getArmorItems(LivingEntity livingEntity){
+        Iterable<ItemStack> armor = livingEntity.getArmorItems();
+        ArrayList<ItemStack> armorItems= new ArrayList<>();
+        armor.forEach(armorItems::add);
+        return armorItems;
+    }
     public ArrayList<ItemStack> getThisArmorItems(LivingEntity livingEntity){
         Iterable<ItemStack> armor = livingEntity.getArmorItems();
         ArrayList<ItemStack> armorItems = new ArrayList<>();
         armor.forEach((i) -> {if(isFromSet(i)) armorItems.add(i);});
-        return armorItems;
-    }
-    public ArrayList<ItemStack> getArmorItems(LivingEntity livingEntity){
-        Iterable<ItemStack> armor = livingEntity.getArmorItems();
-        ArrayList<ItemStack> armorItems= new ArrayList<>();
-        armor.forEach(armorItems::add);
         return armorItems;
     }
     public float wearingFraction(LivingEntity entity){
@@ -75,12 +76,12 @@ public class ArmorSet {
         }
         return false;
     }
-    public EquipmentSlot getSlot(ItemStack itemstack){
+    public static EquipmentSlot getSlot(ItemStack itemstack){
         Item item = itemstack.getItem();
         if(item instanceof ArmorItem armorItem){
             return armorItem.getSlotType();
         }
-        return null;
+        return EquipmentSlot.FEET;
     }
     public boolean wearingBoots(LivingEntity entity){
         return wearingArray(entity).get(0);
@@ -111,12 +112,10 @@ public class ArmorSet {
         return true;
     }
     public void damageEach(LivingEntity livingEntity, int amount) {
-        for (ItemStack itemStack : livingEntity.getArmorItems()) {
-            if (isFromSet(itemStack)) {
-                itemStack.damage(amount, livingEntity, ((player) -> {
-                    player.sendEquipmentBreakStatus(((ArmorItem) itemStack.getItem()).getSlotType());
-                }));
-            }
+        for (ItemStack itemStack : getThisArmorItems(livingEntity)) {
+            itemStack.damage(amount, livingEntity, ((player) -> {
+                player.sendEquipmentBreakStatus(getSlot(itemStack));
+            }));
         }
     }
 }
