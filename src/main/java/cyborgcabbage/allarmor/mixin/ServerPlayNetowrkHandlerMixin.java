@@ -30,8 +30,8 @@ public class ServerPlayNetowrkHandlerMixin {
                     case 5 -> 9;//A
                     case 6 -> 11;//B
                     case 7 -> 12;//C
-                    case 8 -> 14;
-                    default -> 0;//D
+                    case 8 -> 14;//D
+                    default -> 0;
                 };
                 player.playSound(
                         Instrument.fromBlockState(player.world.getBlockState(player.getLandingPos())).getSound(),

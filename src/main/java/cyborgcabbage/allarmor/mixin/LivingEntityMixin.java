@@ -33,7 +33,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Mixin(value = LivingEntity.class, priority = 1001)
 public abstract class LivingEntityMixin extends Entity{
@@ -101,13 +100,6 @@ public abstract class LivingEntityMixin extends Entity{
                 break;
             }
         }
-        /*
-        Iterable<VoxelShape> iterable = world.getBlockCollisions(entity, targetBox);
-        for (VoxelShape voxelShape : iterable) {
-            if (voxelShape.isEmpty()) continue;
-            return false;
-        }
-        */
     }
 
     @Inject(at = @At("HEAD"),method = "baseTick")
@@ -259,35 +251,11 @@ public abstract class LivingEntityMixin extends Entity{
                 }
             }
         }
-        /*double fraction = AllArmor.DRAGON_BREATH.wearingFraction((LivingEntity)(Object)this);
-        if(fraction > 0.0 && !this.onGround) {
-            Vec3d vel = this.getVelocity();
-            double force = 0.04*fraction;
-            Vec3d thrust;
-            if (this.isFallFlying() || this.isSwimming()) {
-                thrust = this.getRotationVector().normalize().multiply(force);
-            }else{
-                thrust = (new Vec3d(0.0,1.0,0.0)).multiply(force);
-            }
-            boolean isFlying = false;
-            if((LivingEntity)(Object)this instanceof PlayerEntity player) {
-                if(player.getAbilities().flying){
-                    isFlying = true;
-                }
-            }
-            if(!isFlying){
-                this.setVelocity(vel.add(thrust));
-                if(this.world.isClient) {
-                    this.world.addParticle(ParticleTypes.DRAGON_BREATH, this.getX(), this.getY(), this.getZ(), vel.x - thrust.x * 4.0 + this.random.nextGaussian() * 0.05, vel.y - thrust.y * 4.0 + this.random.nextGaussian() * 0.05, vel.z - thrust.z * 4.0 + this.random.nextGaussian() * 0.05);
-                    System.out.println(this.getVelocity());
-                }
-            }
-        }*/
     }
 
     @Redirect(method = "getArmorVisibility", at = @At(value = "INVOKE",target = "Lnet/minecraft/item/ItemStack;isEmpty()Z"))
     public boolean injected(ItemStack itemStack){
-        if (AllArmor.LAPIS_LAZULI.fromSet(itemStack)) {
+        if (AllArmor.LAPIS_LAZULI.isFromSet(itemStack)) {
             return true;
         }
         return itemStack.isEmpty();

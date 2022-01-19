@@ -1,25 +1,24 @@
 package cyborgcabbage.allarmor.item;
 
-import cyborgcabbage.allarmor.AllArmor;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.*;
-import net.minecraft.tag.FluidTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
 
 public class ArmorSet {
-    public MyArmorItem helmet;
-    public MyArmorItem chestplate;
-    public MyArmorItem leggings;
-    public MyArmorItem boots;
-    public ArmorSet(ArmorMaterial material){
+    public final MyArmorItem helmet;
+    public final MyArmorItem chestplate;
+    public final MyArmorItem leggings;
+    public final MyArmorItem boots;
+    private final ArmorMaterial material;
+    public ArmorSet(ArmorMaterial armorMaterial){
+        material = armorMaterial;
         helmet = new MyArmorItem(material, EquipmentSlot.HEAD, new FabricItemSettings().group(ItemGroup.COMBAT));
         chestplate = new MyArmorItem(material, EquipmentSlot.CHEST, new FabricItemSettings().group(ItemGroup.COMBAT));
         leggings = new MyArmorItem(material, EquipmentSlot.LEGS, new FabricItemSettings().group(ItemGroup.COMBAT));
@@ -32,124 +31,88 @@ public class ArmorSet {
         Registry.register(Registry.ITEM, new Identifier("allarmor", name+"_boots"), boots);
     }
     public void register(){
-        this.register(helmet.getMaterial().getName());
+        this.register(material.getName());
+    }
+    public ArrayList<ItemStack> getThisArmorItems(LivingEntity livingEntity){
+        Iterable<ItemStack> armor = livingEntity.getArmorItems();
+        ArrayList<ItemStack> armorItems = new ArrayList<>();
+        armor.forEach((i) -> {if(isFromSet(i)) armorItems.add(i);});
+        return armorItems;
+    }
+    public ArrayList<ItemStack> getArmorItems(LivingEntity livingEntity){
+        Iterable<ItemStack> armor = livingEntity.getArmorItems();
+        ArrayList<ItemStack> armorItems= new ArrayList<>();
+        armor.forEach(armorItems::add);
+        return armorItems;
     }
     public float wearingFraction(LivingEntity entity){
         float percentage = 0.0f;
         Iterator<ItemStack> armorItems = entity.getArmorItems().iterator();
-        percentage += armorItems.next().getItem() == boots ? 0.15f : 0.0f;
-        percentage += armorItems.next().getItem() == leggings ? 0.30f : 0.0f;
-        percentage += armorItems.next().getItem() == chestplate ? 0.35f : 0.0f;
-        percentage += armorItems.next().getItem() == helmet ? 0.20f : 0.0f;
+        if(isFromSet(armorItems.next())) percentage += 0.15f; //Boots
+        if(isFromSet(armorItems.next())) percentage += 0.30f; //Leggings
+        if(isFromSet(armorItems.next())) percentage += 0.35f; //Chestplate
+        if(isFromSet(armorItems.next())) percentage += 0.20f; //Helmet
         return percentage;
     }
     public boolean wearingAny(LivingEntity entity){
-        Iterator<ItemStack> armorItems = entity.getArmorItems().iterator();
-        boolean any = armorItems.next().getItem() == boots;
-        any = any || armorItems.next().getItem() == leggings;
-        any = any || armorItems.next().getItem() == chestplate;
-        any = any || armorItems.next().getItem() == helmet;
-        return any;
+        return !getThisArmorItems(entity).isEmpty();
     }
-    public boolean[] wearingArray(LivingEntity entity){
-        boolean[] array = new boolean[]{false,false,false,false};
-        Iterator<ItemStack> armorItems = entity.getArmorItems().iterator();
-        array[0] = armorItems.next().getItem() == boots;
-        array[1] = armorItems.next().getItem() == leggings;
-        array[2] = armorItems.next().getItem() == chestplate;
-        array[3] = armorItems.next().getItem() == helmet;
+    public ArrayList<Boolean> wearingArray(LivingEntity entity){
+        ArrayList<Boolean> array = new ArrayList<>();
+        getArmorItems(entity).forEach((i) -> array.add(isFromSet(i)));
         return array;
     }
     public boolean wearingAll(LivingEntity entity){
-        Iterator<ItemStack> armorItems = entity.getArmorItems().iterator();
-        boolean any = armorItems.next().getItem() == boots;
-        any = any && armorItems.next().getItem() == leggings;
-        any = any && armorItems.next().getItem() == chestplate;
-        any = any && armorItems.next().getItem() == helmet;
-        return any;
+        return getThisArmorItems(entity).size() == 4;
     }
     public ArmorMaterial getMaterial(){
-        return boots.getMaterial();
+        return material;
     }
-    public boolean fromSet(ItemStack itemstack){
+    public boolean isFromSet(ItemStack itemstack){
         Item item = itemstack.getItem();
         if(item instanceof ArmorItem armorItem){
             return armorItem.getMaterial() == this.getMaterial();
         }
         return false;
     }
+    public EquipmentSlot getSlot(ItemStack itemstack){
+        Item item = itemstack.getItem();
+        if(item instanceof ArmorItem armorItem){
+            return armorItem.getSlotType();
+        }
+        return null;
+    }
     public boolean wearingBoots(LivingEntity entity){
-        return wearingArray(entity)[0];
+        return wearingArray(entity).get(0);
     }
     public boolean wearingLeggings(LivingEntity entity){
-        return wearingArray(entity)[1];
+        return wearingArray(entity).get(1);
     }
     public boolean wearingChestplate(LivingEntity entity){
-        return wearingArray(entity)[2];
+        return wearingArray(entity).get(2);
     }
     public boolean wearingHelmet(LivingEntity entity){
-        return wearingArray(entity)[3];
-    }
-    public ArrayList<Integer> wearingIndices(LivingEntity livingEntity){
-        boolean[] armor = wearingArray(livingEntity);
-        ArrayList<Integer> armorIndices = new ArrayList<>();
-        for(int i=0;i<4;i++){
-            if(armor[i]){
-                armorIndices.add(i);
-            }
-        }
-        return armorIndices;
+        return wearingArray(entity).get(3);
     }
     public boolean damage(LivingEntity livingEntity, int amount){
-        Iterator<ItemStack> armor = livingEntity.getArmorItems().iterator();
-        ItemStack boots = armor.next();
-        ItemStack leggings = armor.next();
-        ItemStack chestplate = armor.next();
-        ItemStack helmet = armor.next();
+        ArrayList<ItemStack> items = getArmorItems(livingEntity);
         if(!wearingAny(livingEntity)){
             return false;
         }
         while(amount > 0) {
-            switch(livingEntity.getRandom().nextInt(4)) {
-                case 0:
-                    if (boots.getItem() == this.boots) {
-                        boots.damage(1, livingEntity, ((player) -> {
-                            player.sendEquipmentBreakStatus(EquipmentSlot.FEET);
-                        }));
-                        amount--;
-                    }
-                    break;
-                case 1:
-                    if (leggings.getItem() == this.leggings) {
-                        leggings.damage(1, livingEntity, ((player) -> {
-                            player.sendEquipmentBreakStatus(EquipmentSlot.LEGS);
-                        }));
-                        amount--;
-                    }
-                    break;
-                case 2:
-                    if (chestplate.getItem() == this.chestplate) {
-                        chestplate.damage(1, livingEntity, ((player) -> {
-                            player.sendEquipmentBreakStatus(EquipmentSlot.CHEST);
-                        }));
-                        amount--;
-                    }
-                    break;
-                case 3:
-                    if (helmet.getItem() == this.helmet) {
-                        helmet.damage(1, livingEntity, ((player) -> {
-                            player.sendEquipmentBreakStatus(EquipmentSlot.HEAD);
-                        }));
-                        amount--;
-                    }
-                    break;
+            int r = livingEntity.getRandom().nextInt(4);
+            if(isFromSet(items.get(r))) {
+                items.get(r).damage(1, livingEntity, ((player) -> {
+                    player.sendEquipmentBreakStatus(getSlot(items.get(r)));
+                }));
+                amount--;
             }
         }
         return true;
     }
     public void damageEach(LivingEntity livingEntity, int amount) {
         for (ItemStack itemStack : livingEntity.getArmorItems()) {
-            if (this.fromSet(itemStack)) {
+            if (isFromSet(itemStack)) {
                 itemStack.damage(amount, livingEntity, ((player) -> {
                     player.sendEquipmentBreakStatus(((ArmorItem) itemStack.getItem()).getSlotType());
                 }));
