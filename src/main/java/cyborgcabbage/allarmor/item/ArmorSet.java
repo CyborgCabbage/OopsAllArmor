@@ -10,6 +10,7 @@ import net.minecraft.util.registry.Registry;
 
 import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 public class ArmorSet {
@@ -96,18 +97,22 @@ public class ArmorSet {
         return wearingArray(entity).get(3);
     }
     public boolean damage(LivingEntity livingEntity, int amount){
-        ArrayList<ItemStack> items = getArmorItems(livingEntity);
-        if(!wearingAny(livingEntity)){
-            return false;
+        ArrayList<ItemStack> items = getThisArmorItems(livingEntity);
+        if(items.isEmpty() || amount <= 0){
+            return true;
         }
-        while(amount > 0) {
-            int r = livingEntity.getRandom().nextInt(4);
-            if(isFromSet(items.get(r))) {
-                items.get(r).damage(1, livingEntity, ((player) -> {
-                    player.sendEquipmentBreakStatus(getSlot(items.get(r)));
-                }));
-                amount--;
+        Collections.shuffle(items);
+        int splitDamage = amount/items.size();
+        boolean first = true;
+        for(ItemStack i: items){
+            int damageAmount = splitDamage;
+            if(first){
+                first = false;
+                damageAmount += amount-splitDamage*items.size();
             }
+            i.damage(damageAmount, livingEntity, ((player) -> {
+                player.sendEquipmentBreakStatus(getSlot(i));
+            }));
         }
         return true;
     }

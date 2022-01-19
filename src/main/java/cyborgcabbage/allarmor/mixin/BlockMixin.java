@@ -22,7 +22,7 @@ public abstract class BlockMixin {
                 Vec3d vec3d = entity.getVelocity();
                 if (vec3d.y < 0.0) {
                     entity.setVelocity(vec3d.x, -vec3d.y * fraction, vec3d.z);
-                    entity.fallDistance = 0.0F;
+                    entity.fallDistance *= 1.0f-fraction;
                     ci.cancel();
                 }
             }
