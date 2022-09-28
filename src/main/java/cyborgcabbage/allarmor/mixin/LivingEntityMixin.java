@@ -22,7 +22,6 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldEvents;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -32,7 +31,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,13 +40,7 @@ public abstract class LivingEntityMixin extends Entity{
 
     @Shadow public abstract boolean isFallFlying();
 
-    @Shadow protected abstract void damageHelmet(DamageSource source, float amount);
-
     @Shadow public abstract Iterable<ItemStack> getArmorItems();
-
-    @Shadow public abstract double getAttackDistanceScalingFactor(@Nullable Entity entity);
-
-    @Shadow protected int roll;
 
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);

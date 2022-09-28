@@ -30,8 +30,6 @@ public abstract class EntityMixin {
 
     @Shadow @Final protected Random random;
 
-    @Shadow private Box entityBounds;
-
     @Inject(method="playStepSound", at = @At("HEAD"), cancellable = true)
     public void inject(BlockPos pos, BlockState state, CallbackInfo ci){
         if(!state.getMaterial().isLiquid() && (Entity)(Object)this instanceof LivingEntity livingEntity){
