@@ -6,7 +6,6 @@ import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 
@@ -18,6 +17,6 @@ public class MyArmorItem extends ArmorItem{
     }
     @Override
     public void appendTooltip(ItemStack itemStack, World world, List<Text> tooltip, TooltipContext tooltipContext) {
-        tooltip.add( new TranslatableText("item.allarmor."+this.getMaterial().getName()+".tooltip").formatted(Formatting.ITALIC,Formatting.GRAY) );
+        tooltip.add( Text.translatable("item.allarmor."+this.getMaterial().getName()+".tooltip").formatted(Formatting.ITALIC,Formatting.GRAY) );
     }
 }
