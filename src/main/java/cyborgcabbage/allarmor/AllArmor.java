@@ -1,18 +1,10 @@
 package cyborgcabbage.allarmor;
 
 import cyborgcabbage.allarmor.item.ArmorSet;
-import net.fabricmc.api.ModInitializer;
 import cyborgcabbage.allarmor.item.MyArmorMaterial;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.block.enums.Instrument;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
+import net.fabricmc.api.ModInitializer;
 import net.minecraft.item.Items;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Identifier;
-
-import java.util.ArrayList;
 
 public class AllArmor implements ModInitializer {
     public static final ArmorSet PAPER = new ArmorSet(new MyArmorMaterial(
@@ -130,16 +122,6 @@ public class AllArmor implements ModInitializer {
             Items.ACACIA_BOAT,
             Items.DARK_OAK_BOAT
     ));
-    public static final ArmorSet BOOK = new ArmorSet(new MyArmorMaterial(
-            "book",
-            5,
-            new int[]{1, 2, 3, 1},
-            15,
-            SoundEvents.ITEM_ARMOR_EQUIP_LEATHER,
-            0.0F,
-            0.0F,
-            Items.BOOK
-    ));
     public static final ArmorSet GLOWSTONE = new ArmorSet(new MyArmorMaterial(
             "glowstone",
             10,
@@ -160,17 +142,6 @@ public class AllArmor implements ModInitializer {
             0.0F,
             Items.NOTE_BLOCK
     ));
-    public static final ArmorSet JUKEBOX = new ArmorSet(new MyArmorMaterial(
-            "jukebox",
-            33,
-            new int[]{3, 6, 8, 3},
-            10,
-            SoundEvents.BLOCK_WOOD_PLACE,
-            2.0F,
-            0.0F,
-            Items.JUKEBOX
-    ));
-
     public static final ArmorSet COPPER_INGOT = new ArmorSet(new MyArmorMaterial(
             "copper_ingot",
             15,
@@ -259,27 +230,21 @@ public class AllArmor implements ModInitializer {
         BOW.register();//Should work in creative mode
         TNT.register();
         GLASS.register();
-
         LADDER.register();//(maybe allow players to climb the person wearing the armor)
         WHEAT.register();
         EMERALD.register();
         ENCHANTING_TABLE.register();
         LIGHTNING_ROD.register();
-
         CACTUS.register();
         BOAT.register();
         GLOWSTONE.register();
         COPPER_INGOT.register();
         SLIME_BALL.register();
-
         DRAGON_BREATH.register();//Texture Later
         BEDROCK.register();
         NOTE_BLOCK.register();
         LAPIS_LAZULI.register();
         ENDER_PEARL.register();
-
         BONE_MEAL.register();
-        //BOOK.register();//Should trigger all recipes when worn
-        //JUKEBOX.register();//Should cycle through music discs in inventory
     }
 }
